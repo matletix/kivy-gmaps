@@ -39,17 +39,31 @@ from kivy.app import App
 class HelloGmaps(App):
     def build(self):
         self.map_widget = GMap()
-        self.map_widget.bind(on_ready=self.create_some_markers)
+        self.map_widget.bind(on_ready=self.create_some_markers_and_polyline)
         return self.map_widget
 
-    def create_some_markers(self, map_widget):
+    def create_some_markers_and_polyline(self, map_widget):
         # get the google map interface
         sydney = map_widget.create_latlng(-33.867, 151.206)
-        marker = map_widget.create_marker(
+        canberra = map_widget.create_latlng(-35.292, 149.125)
+        
+        marker1 = map_widget.create_marker(
             title='Sydney',
             snippet='The most populous city in Autralia',
             position=sydney)
-        map_widget.map.addMarker(marker)
+            
+        marker2 = map_widget.create_marker(
+            title='Canberra',
+            snippet='The capital city of Australia',
+            position=canberra)
+            
+        map_widget.map.addMarker(marker1)
+        map_widget.map.addMarker(marker2)
+
+        # create a polyline between Sydney and Canberra
+        coords = (sydney, canberra)
+        polyline = map_widget.create_polyline(coords)
+        map_widget.map.addPolyline(polyline)
 
 if __name__ == '__main__':
     HelloGmaps().run()
@@ -105,6 +119,7 @@ Supported [Google Maps events](https://developers.google.com/maps/documentation/
 * `on_marker_drag_end(Marker)`
 * `on_marker_drag_start(Marker)`
 * `on_my_location_button_click`
+* `on_my_location_change`
 
 All the events are dispatched in the map thread, not the kivy main thread.
 
@@ -114,6 +129,7 @@ The GMap have some methods to create java object easily, such as:
 
 * `GMap.create_latlng(lat, lng)` - Create a [LatLng](https://developers.google.com/maps/documentation/android/reference/com/google/android/gms/maps/model/LatLng) object
 * `GMap.create_marker(**options)` Create a [Marker](https://developers.google.com/maps/documentation/android/reference/com/google/android/gms/maps/model/Marker) object, with all the key=value in options
+* `GMap.create_polyline(coords, width=5, color=Color.RED, geodesic=False)` Create a [PolylineOptions](https://developers.google.com/maps/documentation/android/reference/com/google/android/gms/maps/model/PolylineOptions) object.
 
 ## Authors
 
